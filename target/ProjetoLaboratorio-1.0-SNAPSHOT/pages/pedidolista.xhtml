@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/templates/modelo.xhtml">
+
+
+    <ui:define name="conteudo">
+
+        <h:form id="form_PedidoLista">
+            <p:commandButton value="Carregar" actionListener="#{pedidoBean.atualizar()}" update=":form_PedidoLista"/>
+            <p:panel header="Lista - Pedidos">
+                <p:dataTable id = "dataTablepedido" value="#{pedidoBean.pedidos}" var="pedido" paginator="true" paginatorPosition="top" rows="10">
+                    <p:column class="coluna" headerText="Codigo:" width="30" filterBy="#{pedido.codigo}" filterMatchMode="contains">
+                        <h:outputText value="#{pedido.codigo}" />
+                    </p:column>
+                    <p:column class="coluna" headerText="Cliente:"  width="80" filterBy="#{pedido.cliente.nome}" filterMatchMode="contains">
+                        <h:outputText value="#{pedido.cliente.nome}"/>
+                    </p:column>
+                    <p:column class="coluna" headerText="Email:" width="50" >
+                        <h:commandLink value="#{pedido.cliente.email}" actionListener="#{pedidoBean.pedido.enviarArquivo_XML_Email(pedido)}">
+
+                        </h:commandLink>
+                    </p:column>
+                                       
+                    <p:column class="coluna" headerText="Total:" width="20">
+                        <h:outputText value="#{pedido.total}">
+                            <f:convertNumber locale="pt_BR" minFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column class="coluna" headerText="Data:" width="30" filterBy="#{pedido.data}" filterMatchMode="contains">
+                        <h:outputText value="#{pedido.data}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column class="coluna" headerText="" width="15">
+                        <p:commandButton icon="ui-icon-pencil" action="pedido.xhtml" actionListener="#{pedidoBean.carregarPedidoEdicao(pedido)}"/>
+                    </p:column>
+                    <!--><p:column class="coluna" headerText="" width="15">
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{pedidoBean.excluir(pedido)}" update=":form_PedidoLista :mensagem">
+                            <p:confirm header="Confirmação" message="Deseja Excluir?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column><-->
+                </p:dataTable>
+            </p:panel>
+
+            <p:confirmDialog global="true">
+                <p:commandButton value="SIM" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="NÃO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+
+
+        </h:form>
+    </ui:define>
+</ui:composition>
+

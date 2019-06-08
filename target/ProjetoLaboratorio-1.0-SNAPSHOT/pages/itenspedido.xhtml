@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/templates/modelo.xhtml">
+
+
+    <ui:define name="conteudo">
+
+        <h:form id="form_PedidoItensLista">
+ 
+            <p:panel header="Lista - Itens do Pedido">
+                <p:dataTable widgetVar="itensDoPedido" id = "dataTableItensPedido" value="#{itemPedidoBean.listaObjetos}" var="itensPedido" paginator="true" paginatorPosition="top" rows="11">
+                    <p:column class="coluna" headerText="Cliente:"  width="80" filterBy="#{itensPedido.pedido.cliente.nome}" filterMatchMode="contains">
+                        <h:outputText value="#{itensPedido.pedido.cliente.nome}"/>
+                    </p:column>
+                    <p:column class="coluna" headerText="Exame:"  width="80" filterBy="#{itensPedido.produto.nome}" filterMatchMode="contains">
+                        <h:outputText value="#{itensPedido.produto.nome}"/>
+                    </p:column>
+                    <p:column class="coluna" headerText="Preço Custo (R$)" width="20">
+                        <h:outputText value="#{itensPedido.produto.precoCusto}" >
+                            <f:convertNumber locale="pt_BR" minFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column class="coluna" headerText="Preço Venda  (R$)" width="20">
+                        <h:outputText value="#{itensPedido.produto.precoVenda}">
+                            <f:convertNumber locale="pt_BR" minFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+                 
+                    <p:column class="coluna" headerText="Data:" width="100" 
+                              filterBy="#{itensPedido.pedido.data}" 
+                              filterFunction="#{itemPedidoBean.filterByDate}"  
+                              filterMatchMode="contains"
+                              >
+                        <f:facet name="filter">
+                                <h:inputHidden id="filter"/>
+                            </f:facet>
+
+                            <f:facet name="header" >
+                                
+                                <h:outputText value="Data"/><br/>
+                                <h:outputLabel value="De: "/>
+                                <p:calendar   id="from" pattern="dd/MM/yyyy" locale="pt_BR" navigator="true" showButtonPanel="true" styleClass="calendario">
+                                    <p:ajax event="dateSelect" onstart="$(PrimeFaces.escapeClientId('#{p:component('filter')}'))[0].value = $(PrimeFaces.escapeClientId('#{p:component('from')}_input'))[0].value + '-' + $(PrimeFaces.escapeClientId('#{p:component('to')}_input'))[0].value" oncomplete="PF('itensDoPedido').filter()"/>
+                                </p:calendar>
+                                <h:outputLabel value=" Até: "/>
+                                <p:calendar id="to" pattern="dd/MM/yyyy" navigator="true" showButtonPanel="true" styleClass="calendario">
+                                    <p:ajax event="dateSelect" onstart="$(PrimeFaces.escapeClientId('#{p:component('filter')}'))[0].value = $(PrimeFaces.escapeClientId('#{p:component('from')}_input'))[0].value + '-' + $(PrimeFaces.escapeClientId('#{p:component('to')}_input'))[0].value" oncomplete="PF('itensDoPedido').filter()"/>
+                                </p:calendar>
+                            </f:facet>
+                        
+                        <h:outputText value="#{itensPedido.pedido.data}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <f:facet name="footer">
+                        <h:outputText value="Existem " />
+                        <h:outputText value="#{fn:length(itemPedidoBean.listaObjetos)}" />
+                        <h:outputText value=" itens cadastrados. " />  
+                    </f:facet>
+                    
+                </p:dataTable>
+            </p:panel>
+
+        </h:form>
+    </ui:define>
+</ui:composition>
+

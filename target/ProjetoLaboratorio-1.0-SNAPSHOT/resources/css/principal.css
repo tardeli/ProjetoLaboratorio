@@ -1,0 +1,13 @@
+.ui-widget {
+    font-size: 98% !important;
+}
+
+.coluna{
+    text-align: center;
+    
+}
+
+.calendario input {
+    width: 90px;
+	
+}

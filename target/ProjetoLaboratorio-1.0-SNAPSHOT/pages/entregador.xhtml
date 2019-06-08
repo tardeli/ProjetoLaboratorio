@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/templates/modelo.xhtml">
+
+    <ui:define name="conteudo">
+
+        <h:form id="form_entregador">   
+
+            <p:panel header="Lista - Entregadores">
+                <p:dataTable id = "dataTable" value="#{entregadorBean.listaObjetos}" var="entregador" 
+                             emptyMessage="Nenhum Registro Encotrado com esta pesquisa" paginator="true" paginatorPosition="top"  rows="8" style="font-size: 11pt"><br />
+                    <f:facet name="header" >
+                        <p:commandButton value = "Novo" update=":form_dialago:painel_dialago" oncomplete="PF('dialago').show();" ></p:commandButton>
+                    </f:facet>
+                    <p:column headerText="Cód." width="30">
+                        <h:outputText value="#{entregador.codigo}" />
+                    </p:column>
+                    <p:column headerText="Entregador" sortBy="#{entregador.nome}" filterBy="#{entregador.nome}" filterMatchMode="contains">
+                        <h:outputText value="#{entregador.nome}" />
+                    </p:column>
+                    <p:column headerText="Empresa" sortBy="#{entregador.empresa.nome}" filterBy="#{entregador.empresa.nome}" filterMatchMode="contains">
+                        <h:outputText value="#{entregador.empresa.nome}" />
+                    </p:column>
+                    <p:column headerText="Telefone">
+                        <h:outputText value="#{entregador.telefone}" />
+                    </p:column>
+                    <!--
+                    <p:column headerText="Data de Nascimento" width="80">
+                        <h:outputText value="#{entregador.dataNascimento}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Cpf" width="120">
+                        <h:outputText value="#{entregador.cpf}" />
+                    </p:column>
+                    <p:column headerText="Email">
+                        <h:outputText value="#{entregador.email}" />
+                    </p:column>
+                    <p:column headerText="Logradouro">
+                        <h:outputText value="#{entregador.logradouro}" />
+                    </p:column>
+                    <p:column headerText="Bairro" width="85">
+                        <h:outputText value="#{entregador.bairro}" />
+                    </p:column>
+                    <p:column headerText="Ponto Referencia">
+                        <h:outputText value="#{entregador.pontoReferencia}" />
+                    </p:column>
+                    -->
+                    <p:column headerText="" width="35">
+                        <p:commandButton icon="ui-icon-pencil" oncomplete="PF('dialago').show();" action="#{entregadorBean.carregarDadosEditar(entregador)}" update=":form_dialago:painel_dialago :form_entregador"></p:commandButton>
+                    </p:column>
+                    <p:growl id="message" showDetail="true" />
+                    <p:column headerText="" width="35">
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{entregadorBean.excluir(entregador)}" update=":form_entregador :mensagem">
+                            <p:confirm header="Confirmação" message="Deseja Excluir?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column> 
+                    <f:facet name="footer">
+                       <h:outputText value="Existem " />
+                       <h:outputText value="#{fn:length(entregadorBean.listaObjetos)}" />
+                       <h:outputText value=" pessoas cadastradas. " />  
+                   </f:facet>
+                    
+                </p:dataTable>
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </p:panel>
+        </h:form>
+
+        <p:dialog widgetVar="dialago" closable="false" modal="true" header="Controle de Entregador" resizable="false">
+            <h:form id="form_dialago">
+
+                <h:panelGrid id="painel_dialago" columns="2">
+                    <h:outputLabel>Nome: <p:inputText id="nome" value="#{entregadorBean.entregador.nome}" size="40" /></h:outputLabel>
+                    <h:outputLabel>Cpf: <p:inputMask mask="999.999.999-99" id="cpf" value="#{entregadorBean.entregador.cpf}" size="15" /></h:outputLabel>
+                    <h:outputLabel>Data de Nascimento: <p:calendar id="datanascimento" value="#{entregadorBean.entregador.dataNascimento}" size="10"/></h:outputLabel>
+                    <h:outputLabel>Telefone: <p:inputMask mask="(99) 9999-9999" id="telefone" value="#{entregadorBean.entregador.telefone}" size="12" /></h:outputLabel>
+                    <h:outputLabel>Email: <p:inputText id="email" value="#{entregadorBean.entregador.email}" size="40"></p:inputText></h:outputLabel>
+                    <h:outputLabel>Logradouro: <p:inputText id="logradouro" value="#{entregadorBean.entregador.logradouro}" size="40" /></h:outputLabel>
+                    <h:outputLabel>Bairro: <p:inputText id="bairro" value="#{entregadorBean.entregador.bairro}" size="30" /></h:outputLabel>
+                    <h:outputLabel>Ponto de Referência: <p:inputText id="pontoreferencia" value="#{entregadorBean.entregador.pontoReferencia}" size="40" /></h:outputLabel>
+                    <h:outputLabel>Empresa: 
+                        <p:selectOneMenu id="combobox_empresa"  value="#{entregadorBean.entregador.empresa}" converter="empresaConverter">
+                            <f:selectItem itemLabel="Selecione um Item" />
+                            <f:selectItems value="#{entregadorBean.listaEmpresas}"  var="Empresa" itemValue="#{Empresa}" itemLabel="#{Empresa.nome}"/>
+                                
+                        </p:selectOneMenu>
+                            
+                    </h:outputLabel>
+                </h:panelGrid>
+                <h:panelGrid columns="2">
+
+                    <p:commandButton widgetVar="btn_salvar" value="Salvar" id="salvar" actionListener="#{entregadorBean.salvar()}"  oncomplete="PF('dialago').hide()" update=":form_entregador :mensagem" />
+                    <p:commandButton value="Fechar" id="fechar" actionListener="#{entregadorBean.novo()}" oncomplete="PF('dialago').hide()" update="@form :form_entregador"/>
+                </h:panelGrid>
+            </h:form>
+
+        </p:dialog>
+    </ui:define>
+</ui:composition>
+

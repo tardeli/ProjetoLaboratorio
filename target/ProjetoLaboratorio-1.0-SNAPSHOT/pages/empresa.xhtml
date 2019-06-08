@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/templates/modelo.xhtml">
+
+
+    <ui:define name="conteudo">
+
+        <h:form id="form_empresa">   
+
+            <p:panel header="Lista - Empresas">
+                <p:dataTable id = "dataTable" value="#{empresaBean.listaObjetos}" var="empresa" 
+                             emptyMessage="Nenhum Registro Encotrado com esta pesquisa" paginator="true" paginatorPosition="top" rows="8" style="font-size: 11pt"><br />
+                    <f:facet name="header" >
+                        <p:commandButton value = "Novo" update=":form_dialago:painel_dialago" oncomplete="PF('dialago').show();" ></p:commandButton>
+                    </f:facet>
+                    <p:column headerText="Cód." width="30">
+                        <h:outputText value="#{empresa.codigo}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{empresa.nome}" filterBy="#{empresa.nome}" filterMatchMode="contains">
+                        <h:outputText value="#{empresa.nome}" />
+                    </p:column>
+                    <p:column headerText="Telefone" width="90">
+                        <h:outputText value="#{empresa.telefone}" />
+                    </p:column>
+                    <p:column headerText="Cnpj" width="140">
+                        <h:outputText value="#{empresa.cnpj}" />
+                    </p:column>
+                    <p:column headerText="Email">
+                        <h:outputText value="#{empresa.email}" />
+                    </p:column>
+                    <p:column headerText="Logradouro">
+                        <h:outputText value="#{empresa.logradouro}" />
+                    </p:column>
+                    <p:column headerText="Bairro" width="85">
+                        <h:outputText value="#{empresa.bairro}" />
+                    </p:column>
+                    <p:column headerText="Ponto Referencia">
+                        <h:outputText value="#{empresa.pontoReferencia}" />
+                    </p:column>
+                    <p:column headerText="" width="35">
+                        <p:commandButton icon="ui-icon-pencil" oncomplete="PF('dialago').show();" action="#{empresaBean.carregarDadosEditar(empresa)}" update=":form_dialago:painel_dialago :form_empresa"></p:commandButton>
+                    </p:column>
+                    <p:growl id="message" showDetail="true" />
+                    <p:column headerText="" width="35">
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{empresaBean.excluir(empresa)}" update=":form_empresa :mensagem">
+                            <p:confirm header="Confirmação" message="Deseja Excluir?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column> 
+                    <f:facet name="footer">
+                        <h:outputText value="Existem " />
+                        <h:outputText value="#{fn:length(empresaBean.listaObjetos)}" />
+                        <h:outputText value=" pessoas cadastradas. " />  
+                    </f:facet>
+
+                </p:dataTable>
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </p:panel>
+        </h:form>
+
+        <p:dialog widgetVar="dialago" closable="false" modal="true" header="Controle de Empresa" resizable="false">
+            <h:form id="form_dialago">
+
+                <h:panelGrid id="painel_dialago" columns="2">
+                    <h:outputLabel>Nome: <p:inputText id="nome" value="#{empresaBean.empresa.nome}" size="40" /></h:outputLabel>
+                    <h:outputLabel>Cnpj: <p:inputMask mask="999.999.999-99" id="cpf" value="#{empresaBean.empresa.cnpj}" size="15" /></h:outputLabel>
+                    <h:outputLabel>Telefone: <p:inputMask mask="(99) 9999-9999" id="telefone" value="#{empresaBean.empresa.telefone}" size="12" /></h:outputLabel>
+                    <h:outputLabel>Email: <p:inputText id="email" value="#{empresaBean.empresa.email}" size="40"></p:inputText></h:outputLabel>
+                    <h:outputLabel>Logradouro: <p:inputText id="logradouro" value="#{empresaBean.empresa.logradouro}" size="40" /></h:outputLabel>
+                    <h:outputLabel>Bairro: <p:inputText id="bairro" value="#{empresaBean.empresa.bairro}" size="30" /></h:outputLabel>
+                    <h:outputLabel>Ponto de Referência: <p:inputText id="pontoreferencia" value="#{empresaBean.empresa.pontoReferencia}" size="40" /></h:outputLabel>
+                </h:panelGrid>
+                <h:panelGrid columns="2">
+
+                    <p:commandButton widgetVar="btn_salvar" value="Salvar" id="salvar" actionListener="#{empresaBean.salvar()}"  oncomplete="PF('dialago').hide()" update=":form_empresa :mensagem" />
+                    <p:commandButton value="Fechar" id="fechar" actionListener="#{empresaBean.novo()}" oncomplete="PF('dialago').hide()" update="@form :form_empresa"/>
+                </h:panelGrid>
+            </h:form>
+
+        </p:dialog>
+    </ui:define>
+</ui:composition>
+
+

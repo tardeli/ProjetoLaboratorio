@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/templates/modelo.xhtml">
+
+    <ui:define name="conteudo">
+
+        <h:form id="form_produto">   
+
+            <p:panel header="Lista - Produtos" >
+                <p:dataTable id = "dataTable" value="#{produtoBean.listaObjetos}" var="produto" 
+                             emptyMessage="Nenhum Registro Encotrado com esta pesquisa" paginator="true" paginatorPosition="top" rows="8" style="font-size: 11pt"><br />
+                    <f:facet name="header" >
+                        <p:commandButton value = "Novo" update=":form_dialago" oncomplete="PF('dialago').show();" ></p:commandButton>
+                    </f:facet>
+                    <p:column headerText="Cód." width="30">
+                        <h:outputText value="#{produto.codigo}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{produto.nome}" filterBy="#{produto.nome}" filterMatchMode="contains">
+                        <h:outputText value="#{produto.nome}" />
+                    </p:column>
+                    <p:column headerText="Descrição" width="500">
+                        <h:outputText value="#{produto.descricao}" />
+                    </p:column>
+                    <p:column headerText="Preço Custo (R$)" width="80">
+                        <h:outputText value="#{produto.precoCusto}" >
+                            <f:convertNumber locale="pt_BR" minFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Preço Venda  (R$)" width="80">
+                        <h:outputText value="#{produto.precoVenda}" >
+                            <f:convertNumber locale="pt_BR" minFractionDigits="2"/>
+                        </h:outputText>
+                    </p:column>
+                   
+                    <p:column headerText="" width="35" >
+                        <p:commandButton icon="ui-icon-pencil" oncomplete="PF('dialago').show();" action="#{produtoBean.carregarDadosEditar(produto)}" update=":form_dialago:painel_dialago :form_produto "></p:commandButton>
+                    </p:column>
+                    <p:growl id="message" showDetail="true" />
+                    <p:column headerText="" width="35">
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{produtoBean.excluir(produto)}" update=":form_produto :mensagem">
+                            <p:confirm header="Confirmação" message="Deseja Excluir o produto #{produto.nome} ?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column> 
+                    <f:facet name="footer">
+                        <h:outputText value="Existem " />
+                        <h:outputText value="#{fn:length(produtoBean.listaObjetos)}" />
+                        <h:outputText value=" produtos cadastradas. " />  
+                    </f:facet>
+
+                </p:dataTable>
+                <p:confirmDialog global="true">
+                    <p:commandButton value="NÃO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    <p:commandButton value="SIM" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                </p:confirmDialog>
+            </p:panel>
+        </h:form>
+
+        <p:dialog widgetVar="dialago" closable="false" modal="true" header="Controle de Produto" resizable="false" draggable="true">
+            <h:form id="form_dialago" enctype="multipart/form-data">
+                <p:panelGrid id="painel_dialago" columns="2">
+                    <p:outputLabel value="Nome:" for="nome"/>
+                    <p:inputText id="nome" value="#{produtoBean.produto.nome}" size="40" /> 
+                    <p:outputLabel value="Descrição:"/> 
+                    <p:inputTextarea id="descricao" value="#{produtoBean.produto.descricao}" style="width: 400px;"/>
+                    <p:outputLabel value="Preço Custo (R$): "/> 
+                    <p:inputText id="precocusto" value="#{produtoBean.produto.precoCusto}" size="40">
+                        <f:convertNumber locale="pt_BR" minFractionDigits="2"/>
+                        <!--><f:validateBean/><-->
+                    </p:inputText>
+                    <p:outputLabel value="Preço Venda (R$): "/> 
+                    <p:inputText id="precovenda" value="#{produtoBean.produto.precoVenda}" size="40">
+                        <f:convertNumber locale="pt_BR" minFractionDigits="2"/>
+                        <!--><f:validateBean/><-->
+                    </p:inputText>
+                     
+                    
+                </p:panelGrid>
+                
+                
+                
+                <p:panelGrid columns="2">
+                    <p:commandButton widgetVar="btn_salvar" value="Salvar" id="salvar" actionListener="#{produtoBean.salvar()}" update=":form_produto :mensagem :form_dialago" />
+                    <p:commandButton value="Fechar" id="fechar" actionListener="#{produtoBean.novo()}" oncomplete="PF('dialago').hide()" immediate="true" update=":form_produto mensagem"/>
+                </p:panelGrid>
+
+            </h:form>
+
+        </p:dialog>
+    </ui:define>
+</ui:composition>
+

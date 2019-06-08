@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/templates/modelo.xhtml">
+
+
+    <ui:define name="conteudo">
+
+        <h:form id="form_relatorio">
+ 
+            <p:panel header="Relatório - Itens do Pedido">
+                <p:panelGrid id="painel_dialago_relatorio" columns="4">
+                    <p:outputLabel value="Data Inicial: "> 
+                        <p:calendar id="datanainicial" size="10" value="#{itemPedidoBean.dataInicial}" required="true" requiredMessage="É preciso selecionar uma data inicial"/>
+                    </p:outputLabel>
+                    <p:outputLabel value="Data Final: "> 
+                        <p:calendar id="datafinal" size="10" value="#{itemPedidoBean.dataFinal}" required="true" requiredMessage="É preciso selecionar uma data final"/>
+                    </p:outputLabel>
+                    <p:commandButton  value = "Imprimir" actionListener="#{itemPedidoBean.imprimir()}" update="mensagem :form_relatorio"/>
+                    <p:commandButton  value = "Voltar" action="index" immediate="true"/>
+                </p:panelGrid>
+                
+            </p:panel>
+            
+        </h:form>
+    </ui:define>
+</ui:composition>
+

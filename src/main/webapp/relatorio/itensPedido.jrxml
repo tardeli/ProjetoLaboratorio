@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4ecfafa4-9758-4ff9-9b6f-c48ae1775cce">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="data_Inicio" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="data_final" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     COUNT(produto.`nome`) AS totalItensVendidos,
+     produto.`nome` AS produto_nome,
+     itempedido.`produto_codigo` AS itempedido_produto_codigo,
+     pedido.`data` AS pedido_data,
+     produto.`precoCusto` AS produto_precoCusto,
+     produto.`precoVenda` AS produto_precoVenda
+FROM
+     `produto` produto INNER JOIN `itempedido` itempedido ON produto.`codigo` = itempedido.`produto_codigo`
+     INNER JOIN `pedido` pedido ON itempedido.`pedido_codigo` = pedido.`codigo`
+     AND  pedido.`data` BETWEEN $P{data_Inicio} AND $P{data_final}
+GROUP BY
+     produto.`nome`
+ORDER BY
+     pedido.`data` ASC]]>
+	</queryString>
+	<field name="totalItensVendidos" class="java.lang.Long"/>
+	<field name="produto_nome" class="java.lang.String"/>
+	<field name="itempedido_produto_codigo" class="java.lang.Long"/>
+	<field name="pedido_data" class="java.sql.Date"/>
+	<field name="produto_precoCusto" class="java.lang.Double"/>
+	<field name="produto_precoVenda" class="java.lang.Double"/>
+	<variable name="Quant_Total" class="java.lang.Float" calculation="Sum">
+		<variableExpression><![CDATA[$F{totalItensVendidos}*$F{produto_precoVenda}]]></variableExpression>
+	</variable>
+	<variable name="Quant_Exames" class="java.lang.Float" calculation="Sum">
+		<variableExpression><![CDATA[$F{totalItensVendidos}]]></variableExpression>
+	</variable>
+	<variable name="total" class="java.lang.Float">
+		<variableExpression><![CDATA[$F{totalItensVendidos}*$F{produto_precoVenda}]]></variableExpression>
+	</variable>
+	<variable name="hora" class="java.util.Date">
+		<variableExpression><![CDATA[$V{hora}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="31" splitType="Stretch">
+			<staticText>
+				<reportElement x="134" y="8" width="287" height="20" uuid="27dc0c12-6a97-4b17-a1e5-82d8e105d012"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LABORATÓRIO - RELATORIO MENSAL EXAMES]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="15" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="23" splitType="Stretch">
+			<staticText>
+				<reportElement x="355" y="3" width="100" height="20" uuid="1793b249-eeed-473a-bbc4-627d09f2a5b7"/>
+				<text><![CDATA[QUANT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="3" width="100" height="20" uuid="0384c0e0-2b19-4a24-b138-27cf018abaf9"/>
+				<text><![CDATA[EXAME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="114" y="0" width="83" height="20" uuid="2f72a1db-b8e0-4430-a8ef-b3a9ddb7dc74"/>
+				<text><![CDATA[DATA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="3" width="100" height="20" uuid="7fe4ea7b-16dd-4924-9f1e-c2c0bb1565c1"/>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="197" y="3" width="48" height="20" uuid="26d7b50e-d993-48b0-9ae0-72b57471b232"/>
+				<text><![CDATA[V.CUSTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="277" y="3" width="48" height="20" uuid="3c95cb62-cd1b-429a-b3e2-878de8086395"/>
+				<text><![CDATA[V.VENDA]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="114" y="0" width="83" height="20" uuid="89556080-08c6-42da-a37f-86970eacd1b2"/>
+				<textFieldExpression><![CDATA[$F{pedido_data}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="100" height="20" uuid="259ad24c-0221-4405-859d-6af29edc4447"/>
+				<textFieldExpression><![CDATA[$F{produto_nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="355" y="1" width="44" height="20" uuid="cdd20cbd-3164-4394-8f27-c536f68d67dd"/>
+				<textFieldExpression><![CDATA[$F{totalItensVendidos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="197" y="1" width="48" height="20" uuid="97e12524-a285-4acc-82af-465e01697895"/>
+				<textFieldExpression><![CDATA[$F{produto_precoCusto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="277" y="0" width="48" height="20" uuid="1bea6d86-9571-4dc7-aa0f-501e4c37a8fd"/>
+				<textFieldExpression><![CDATA[$F{produto_precoVenda}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="455" y="1" width="100" height="20" uuid="504ff778-94ee-44f6-9e7b-aa9bf53133ac"/>
+				<textFieldExpression><![CDATA[$F{totalItensVendidos}*$F{produto_precoVenda}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="42" splitType="Stretch">
+			<staticText>
+				<reportElement x="425" y="0" width="100" height="20" uuid="ff491ccb-47fd-4127-8176-946f2010865f"/>
+				<text><![CDATA[QUANT. TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="325" y="0" width="100" height="20" uuid="de9234da-2dae-43dd-ad3d-10e3543171fb"/>
+				<text><![CDATA[QUANT. EXAMES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="355" y="22" width="44" height="20" uuid="b1809e90-5ba6-4387-8974-6eeab7484d04"/>
+				<textFieldExpression><![CDATA[$V{Quant_Exames}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="443" y="22" width="44" height="20" uuid="62b8dc9e-92a6-4a6b-b43c-2d772110ecfc"/>
+				<textFieldExpression><![CDATA[$V{Quant_Total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="70" splitType="Stretch">
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="407" y="24" width="100" height="20" uuid="ce722aca-ad5d-412d-ba9c-21093e238b9c"/>
+				<textFieldExpression><![CDATA[$V{hora}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

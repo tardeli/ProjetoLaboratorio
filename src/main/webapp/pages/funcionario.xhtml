@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/templates/modelo.xhtml">
+
+    <ui:define name="conteudo">
+
+        <h:form id="form_funcionario">   
+
+            <p:panel header="Lista - Funcionario">
+                <p:dataTable id = "dataTable" value="#{funcionarioBean.listaObjetos}" var="funcionario" 
+                             emptyMessage="Nenhum Registro Encotrado com esta pesquisa" paginator="true" paginatorPosition="top"  rows="8" style="font-size: 11pt"><br />
+                    <f:facet name="header" >
+                        <p:commandButton value = "Novo" update=":form_dialago:painel_dialago" oncomplete="PF('dialago').show();" ></p:commandButton>
+                    </f:facet>
+                    <p:column headerText="Cód." width="30">
+                        <h:outputText value="#{funcionario.codigo}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{funcionario.nome}" filterBy="#{funcionario.nome}" filterMatchMode="contains">
+                        <h:outputText value="#{funcionario.nome}" />
+                    </p:column>
+                    <p:column headerText="Data de Nascimento" width="80">
+                        <h:outputText value="#{funcionario.dataNascimento}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Cpf" width="120">
+                        <h:outputText value="#{funcionario.cpf}" />
+                    </p:column>
+                    <p:column headerText="Email">
+                        <h:outputText value="#{funcionario.email}" />
+                    </p:column>
+                    <p:column headerText="Cargo">
+                        <h:outputText value="#{funcionario.cargo}" />
+                    </p:column>
+                    <p:column headerText="Usuario">
+                        <h:outputText value="#{funcionario.usuario}" />
+                    </p:column>    
+                    <p:column headerText="Logradouro">
+                        <h:outputText value="#{funcionario.logradouro}" />
+                    </p:column>
+                    <p:column headerText="Bairro" width="85">
+                        <h:outputText value="#{funcionario.bairro}" />
+                    </p:column>
+                    <p:column headerText="Ponto Referencia">
+                        <h:outputText value="#{funcionario.pontoReferencia}" />
+                    </p:column>
+                    <p:column headerText="" width="35">
+                        <p:commandButton icon="ui-icon-pencil" oncomplete="PF('dialago').show();" action="#{funcionarioBean.carregarDadosEditar(funcionario)}" update=":form_dialago:painel_dialago :form_funcionario"></p:commandButton>
+                    </p:column>
+                    <p:growl id="message" showDetail="true" />
+                    <p:column headerText="" width="35">
+                        <p:commandButton icon="ui-icon-trash" actionListener="#{funcionarioBean.excluir(funcionario)}" update=":form_funcionario :mensagem">
+                            <p:confirm header="Confirmação" message="Deseja Excluir?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                    </p:column> 
+                    <f:facet name="footer">
+                        <h:outputText value="Existem " />
+                        <h:outputText value="#{fn:length(funcionarioBean.listaObjetos)}" />
+                        <h:outputText value=" pessoas cadastradas. " />  
+                    </f:facet>
+
+                </p:dataTable>
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </p:panel>
+        </h:form>
+
+        <p:dialog widgetVar="dialago" closable="false" modal="true" header="Controle de Funconario" resizable="false">
+            <h:form id="form_dialago">
+
+                <h:panelGrid id="painel_dialago" columns="2">
+                    <h:outputLabel>Nome: <p:inputText id="nome" value="#{funcionarioBean.funcionario.nome}" size="40" /></h:outputLabel>
+                    <h:outputLabel>Cpf: <p:inputMask mask="999.999.999-99" id="cpf" value="#{funcionarioBean.funcionario.cpf}" size="15" /></h:outputLabel>
+                    <h:outputLabel>Data de Nascimento: <p:calendar navigator="true" mindate="4/1/88" id="datanascimento" value="#{funcionarioBean.funcionario.dataNascimento}" size="10"/></h:outputLabel>
+                    <h:outputLabel>Telefone: <p:inputMask mask="(99) 9999-9999" id="telefone" value="#{funcionarioBean.funcionario.telefone}" size="12" /></h:outputLabel>
+                    <h:outputLabel>Email: <p:inputText id="email" value="#{funcionarioBean.funcionario.email}" size="40"></p:inputText></h:outputLabel>
+                    <h:outputLabel>Cargo: <p:inputText id="cargo" value="#{funcionarioBean.funcionario.cargo}" size="40"></p:inputText></h:outputLabel>
+                    <h:outputLabel>Usuario: <p:inputText id="usuario" value="#{funcionarioBean.funcionario.usuario}" size="40"></p:inputText></h:outputLabel>
+                    <h:outputLabel>Senha: <p:password id="senha" value="#{funcionarioBean.funcionario.senha}" size="40"></p:password></h:outputLabel>
+                    <h:outputLabel>Logradouro: <p:inputText id="logradouro" value="#{funcionarioBean.funcionario.logradouro}" size="40" /></h:outputLabel>
+                    <h:outputLabel>Bairro: <p:inputText id="bairro" value="#{funcionarioBean.funcionario.bairro}" size="30" /></h:outputLabel>
+                    <h:outputLabel>Ponto de Referência: <p:inputText id="pontoreferencia" value="#{funcionarioBean.funcionario.pontoReferencia}" size="40" /></h:outputLabel>
+                </h:panelGrid>
+                <h:panelGrid columns="2">
+
+                    <p:commandButton value="Salvar" id="salvar" actionListener="#{funcionarioBean.salvar()}"  oncomplete="PF('dialago').hide()" update=":form_funcionario :mensagem" />
+                    <p:commandButton value="Fechar" id="fechar" actionListener="#{funcionarioBean.novo()}" oncomplete="PF('dialago').hide()" update="@form :form_funcionario"/>
+                </h:panelGrid>
+            </h:form>
+
+        </p:dialog>
+    </ui:define>    
+</ui:composition>
